@@ -1,5 +1,12 @@
 package well.boot;
 
+import org.apache.rocketmq.client.exception.MQBrokerException;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.remoting.common.RemotingHelper;
+import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import well.annotation.MyAnnotation;
 import well.bean.BootBean;
+import well.rocketmq.DefaultConsumerMQ;
 import well.util.SpringContextUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 
@@ -23,6 +32,8 @@ public class TestController {
 
     @Resource
     private FeignClientProxy proxy;
+    @Resource
+    private DefaultMQProducer defaultMQProducer;
 
     @Resource
     private TomcatServletWebServerFactory factory;
@@ -54,5 +65,12 @@ public class TestController {
     @GetMapping("/test")
     public void test(){
         Map<String,Object> map = SpringContextUtil.getSpringContext().getBeansWithAnnotation(MyAnnotation.class);
+    }
+
+    @GetMapping("/vvv")
+    public void test1(String msg) throws InterruptedException, RemotingException, MQClientException, MQBrokerException, UnsupportedEncodingException {
+        Message m = new Message("TopicTest", "tags1", msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
+        // 发送消息到一个Broker
+        SendResult sendResult = defaultMQProducer.send(m);
     }
 }
