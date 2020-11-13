@@ -10,6 +10,7 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,13 +33,14 @@ public class TestController {
 
     @Resource
     private FeignClientProxy proxy;
-    @Resource
-    private DefaultMQProducer defaultMQProducer;
-
+//    @Resource
+//    private DefaultMQProducer defaultMQProducer;
+    @Value("${value:123}")
+    private String value;
     @Resource
     private TomcatServletWebServerFactory factory;
 
-    private static Logger logger  = LoggerFactory.getLogger(TestController.class);
+    private static final Logger logger  = LoggerFactory.getLogger(TestController.class);
 
     @GetMapping("")
     public void ttt(HttpServletResponse request) throws IOException, KeeperException, InterruptedException, ClassNotFoundException {
@@ -70,6 +72,7 @@ public class TestController {
     @GetMapping("/vvv")
     public void test1(String msg) throws InterruptedException, RemotingException, MQClientException, MQBrokerException, UnsupportedEncodingException {
         Message m = new Message("TopicTest", "tags1", msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
+        DefaultMQProducer defaultMQProducer = new DefaultMQProducer();
         // 发送消息到一个Broker
         SendResult sendResult = defaultMQProducer.send(m);
     }
