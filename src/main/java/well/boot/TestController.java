@@ -28,7 +28,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/ttt")
+@RequestMapping("/test")
 public class TestController {
 
     @Resource

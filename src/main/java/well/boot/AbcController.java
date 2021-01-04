@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import well.annotation.MyAnnotation;
 import well.bean.BootBean;
@@ -25,6 +22,7 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @RestController
+@RequestMapping("/abc")
 public class AbcController {
 
     private BootBean bean;
@@ -56,6 +54,7 @@ public class AbcController {
     }
 
     @GetMapping("well")
+    @MyAnnotation("eeee")
     public void wellGet(BootBean bean){
 
     }
@@ -103,5 +102,11 @@ public class AbcController {
             }
         });
         return result;
+    }
+
+    // :[\d]+ 正则表达式，表明namespace必须是数字
+    @GetMapping("/namespace/{namespace:[\\d]*p}")
+    public void namespace(@PathVariable String namespace){
+
     }
 }
