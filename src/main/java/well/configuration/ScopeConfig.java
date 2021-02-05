@@ -12,10 +12,10 @@ import java.util.UUID;
 public class ScopeConfig {
 
     @Bean
-    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    // @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public BootBean getBootBean(){
         BootBean bean = new BootBean();
-        bean.setS(UUID.randomUUID().toString());
+        bean.setS("123");
         return bean;
     }
 

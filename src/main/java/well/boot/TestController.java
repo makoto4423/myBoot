@@ -1,5 +1,6 @@
 package well.boot;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -21,12 +22,15 @@ import well.rocketmq.DefaultConsumerMQ;
 import well.util.SpringContextUtil;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/test")
 public class TestController {
@@ -39,6 +43,13 @@ public class TestController {
     private String value;
     @Resource
     private TomcatServletWebServerFactory factory;
+    @Resource
+    private BootBean bean;
+    // spring的注入不是单例的吗?但是HttpServletRequest每次请求都会注入当前请求的request
+    // 但是这个类在内存的位置从未发生变化，理解为request这个东西只是个代理，
+    // 每次去获取到实际request时，都会通过代理获取到真正的request
+    @Resource
+    private HttpServletRequest request;
 
     private static final Logger logger  = LoggerFactory.getLogger(TestController.class);
 
@@ -75,5 +86,19 @@ public class TestController {
         DefaultMQProducer defaultMQProducer = new DefaultMQProducer();
         // 发送消息到一个Broker
         SendResult sendResult = defaultMQProducer.send(m);
+    }
+
+    @GetMapping("/sync")
+    public void sync() throws InterruptedException {
+        synchronized (bean){
+            bean.setS("456");
+            Thread.sleep(10000000);
+            bean.setS("789");
+        }
+    }
+
+    @GetMapping("/sync1")
+    public void sync1(){
+        logger.info(bean.getS());
     }
 }
