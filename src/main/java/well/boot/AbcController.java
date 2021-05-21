@@ -58,7 +58,7 @@ public class AbcController {
 
     }
 
-    @GetMapping("well")
+    @GetMapping("/well")
     @MyAnnotation("eeee")
     public void wellGet(BootBean bean){
 

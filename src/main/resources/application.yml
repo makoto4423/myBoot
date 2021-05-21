@@ -31,3 +31,13 @@ value: 555
 defined: "{
   a: 'bbb',
   b: 'ccc'}"
+
+github:
+  client:
+    clientId: a4d76bdca2f20f7a52fd
+    clientSecret: 67fa8b1db5aae03d3b098a18a48837096b2ff243
+    accessTokenUri: 127.0.0.1:8080/well
+    userAuthorizationUri: http://127.0.0.1:8080/well
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: https://api.github.com/user

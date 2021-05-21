@@ -7,5 +7,6 @@ public class BootBean {
 
     private String s;
     private int a;
+    private String password;
 
 }
